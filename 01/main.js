@@ -9,8 +9,23 @@ const readInterface = readline.createInterface({
     console: false
 });
 
-let getFuelRequirements = function (mass) {
-    return Math.floor(+mass/3) - 2;
+let getFuelRequirements = function (mass) {    
+    let fuel = Math.floor(+mass/3) - 2;
+    return fuel;
+}
+
+let getAddedFuelRequirements = function (mass, fuel) {
+    // Get the remaining fuel to add to current total fuel
+    let remaining = getFuelRequirements(mass);
+    fuel += remaining;
+
+    // If the next iteration will be greater than 0, run this function again
+    // Otherwise, we are not adding any more fuel, so return just the fuel
+    if (getFuelRequirements(remaining) > 0 ) {
+        return getAddedFuelRequirements(remaining, fuel);
+    } else {
+        return fuel;
+    }
 }
 
 let sumFuelRequirements = function() {
@@ -26,6 +41,31 @@ let sumFuelRequirements = function() {
     });
 }
 
+let sumAddedFuelRequirements = function() {
+    return new Promise((resolve) => {
+        let sum = 0;
+        let amounts = [];
+        readInterface
+            .on('line', function(line) {
+                // Add current values to an array
+                let current = getAddedFuelRequirements(line, sum);
+                // console.log("\nLINE: %i SUM: %i CURRENT: %i\n", line, sum, current);
+                amounts.push(current);
+            })
+            .on('close', () => {
+                // Sum up the values in the array to a final sum
+                sum = amounts.reduce((prev, cur) => {
+                    return prev = prev + cur;
+                }, sum);
+                resolve(sum);
+            });
+    });
+}
+
 sumFuelRequirements().then((sum)=> {
-    console.log("Total fuel requirement: ", sum);
+    console.log("Total fuel requirement, part 1: ", sum);
 });
+
+sumAddedFuelRequirements().then((sum) => {
+    console.log("Total added fuel requirement, part 2: ", sum);
+})
