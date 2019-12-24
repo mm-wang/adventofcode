@@ -29,10 +29,10 @@ let runIntcode = (array) => {
         if (i % 4 === 0) {
             if (cur === 99) return;
 
-            let second = array[i+1];
-            let third = array[i+2];
+            let second = array[i+1]; // This will be the position to look for value
+            let third = array[i+2]; // This will be the position to look for value
             let position = array[i+3];
-            console.log(cur, i, second, third, position);
+
             if (cur === 1) {
                 array[position] = array[second] + array[third];
             } else if (cur === 2) {
@@ -43,7 +43,8 @@ let runIntcode = (array) => {
     });
 }
 
+// Part 1: Intcode computer for 1, 2, 99
 readInput().then((contents) => {
     runIntcode(contents);
-    console.log("Contents: ", contents);
-})
+    console.log("Values of intcode computer, part 1: ", contents);
+});
