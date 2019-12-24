@@ -9,12 +9,12 @@ const readInterface = readline.createInterface({
     console: false
 });
 
-let getFuelRequirements = function (mass) {    
+let getFuelRequirements = (mass) => {    
     let fuel = Math.floor(+mass/3) - 2;
     return fuel;
 }
 
-let getAddedFuelRequirements = function (mass, fuel) {
+let getAddedFuelRequirements = (mass, fuel) => {
     // Get the remaining fuel to add to current total fuel
     let remaining = getFuelRequirements(mass);
     fuel += remaining;
@@ -29,11 +29,11 @@ let getAddedFuelRequirements = function (mass, fuel) {
 }
 
 // Basic fuel calculation
-let sumFuelRequirements = function() {
+let sumFuelRequirements = () => {
     return new Promise((resolve) => {
         let sum = 0;
         readInterface
-            .on('line', function(line) {
+            .on('line', (line) => {
                 sum+=getFuelRequirements(line);
             })
             .on('close', () => {
@@ -43,12 +43,12 @@ let sumFuelRequirements = function() {
 }
 
 // Reductive fuel calculation
-let sumAddedFuelRequirements = function() {
+let sumAddedFuelRequirements = () => {
     return new Promise((resolve) => {
         let sum = 0;
         let amounts = [];
         readInterface
-            .on('line', function(line) {
+            .on('line', (line) => {
                 // Add current values to an array
                 let current = getAddedFuelRequirements(line, sum);
                 // console.log("\nLINE: %i SUM: %i CURRENT: %i\n", line, sum, current);
