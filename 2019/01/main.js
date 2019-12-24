@@ -28,6 +28,7 @@ let getAddedFuelRequirements = function (mass, fuel) {
     }
 }
 
+// Basic fuel calculation
 let sumFuelRequirements = function() {
     return new Promise((resolve) => {
         let sum = 0;
@@ -41,6 +42,7 @@ let sumFuelRequirements = function() {
     });
 }
 
+// Reductive fuel calculation
 let sumAddedFuelRequirements = function() {
     return new Promise((resolve) => {
         let sum = 0;
@@ -62,10 +64,12 @@ let sumAddedFuelRequirements = function() {
     });
 }
 
+// Part 1: Simple fuel calculation
 sumFuelRequirements().then((sum)=> {
     console.log("Total fuel requirement, part 1: ", sum);
 });
 
+// Part 2: Recursive fuel calculation
 sumAddedFuelRequirements().then((sum) => {
     console.log("Total added fuel requirement, part 2: ", sum);
 })
