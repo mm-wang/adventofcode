@@ -43,8 +43,44 @@ let runIntcode = (array) => {
     });
 }
 
+let outputIntcode = (array, noun, verb) => {
+    let program = array.slice(0);
+    program[1] = noun;
+    program[2] = verb;
+
+    runIntcode(program);
+    return program[0];
+}
+
+let findNounVerb = (program, nouns, verbs, limit) => {
+    let noun, verb;
+    nouns.forEach((curNoun) => {
+        verbs.forEach((curVerb) => {
+            let inst = program.slice();
+            let output = outputIntcode(inst, curNoun, curVerb);
+            if (output === limit) {
+                noun = curNoun;
+                verb = curVerb;
+            } 
+        })
+    });
+    return {noun, verb}
+}
+
 // Part 1: Intcode computer for 1, 2, 99
 readInput().then((contents) => {
+    contents[1] = 50;
+    contents[2] = 3;
     runIntcode(contents);
-    console.log("Values of intcode computer, part 1: ", contents);
+    console.log("Values of intcode computer, part 1: ", contents[0]);
+});
+
+// Part 2: Intcode computer for 1, 2, 99
+readInput().then((contents) => {
+    let final = 19690720;
+    let nouns = Array.from({length: 100}, (x,i) => { return i + 12; });
+    let verbs = Array.from({length: 50}, (x,i) => { return i + 2; });
+
+    let {noun, verb} = findNounVerb(contents, nouns, verbs, final);
+    console.log("Values of intcode computer, part 2: ", noun, verb);
 });
