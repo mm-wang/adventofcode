@@ -72,21 +72,35 @@ let convertPathToX = (pathMap) => {
 }
 
 let findMatches = (fullPathMap) => {
-    let length = fullPathMap.length;
-    let matches = [];
-    let initPath = fullPathMap[0];
+    let initPath = convertPathToX(fullPathMap[0]);
+    let nextPath = convertPathToX(fullPathMap[1]);
 
-    for (let i = 1; i < length; i++) {
-        let curPath = fullPathMap[i];
-        for (const curSet of curPath) {
-            for (const initSet of initPath) {
-                if (curSet.x === initSet.x && curSet.y === initSet.y) {
-                    matches.push({x: curSet.x, y: curSet.y});
-                }
-            }
+    let xMatches = [];
+    let matches = [];
+
+    // Finding the key in nextPath from the keys in initPath
+    // Getting all X values that match
+    Object.keys(initPath).forEach((eachX) => {
+        let stringX = eachX.toString();
+        if (Object.keys(nextPath).indexOf(stringX) !== -1) {
+            xMatches.push(eachX);
         }
-    }
-    console.log("Matches: ", matches);
+    });
+
+    // Finding the Y matches from the X values
+    // Pushing to the matches array
+    xMatches.forEach((xMatch) => {
+        let yMatches = initPath[xMatch].filter((yMatch) => {
+            return nextPath[xMatch].indexOf(yMatch) !== -1
+        });
+        if (yMatches.length) {
+            yMatches.forEach((yMatch) => {
+                matches.push({x: xMatch, y: yMatch});
+            });
+        }
+    });
+
+    // console.log("Matches: ", matches);
     return matches;  
 }
 
