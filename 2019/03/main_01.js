@@ -108,7 +108,7 @@ let calcManhattanDistance = (set) => {
     return Math.abs(set.x) + Math.abs(set.y);
 }
 
-let findClosestIntersection = (contents) => {
+let findClosestManhattanIntersection = (contents) => {
     let pathMap = [];
     contents.forEach((path, i) => {
         pathMap.push([]);
@@ -127,9 +127,12 @@ let findClosestIntersection = (contents) => {
     return minimumDistance;
 }
 
+// Part 1: Finding closest intersection using Manhattan distance
+// Hint - the way to make this algorithm much more efficient is by
+// keying the coordinates using X
 readInput().then((contents) => {
     console.time("finding closest intersection");
-    let minimum = findClosestIntersection(contents);
+    let minimum = findClosestManhattanIntersection(contents);
     console.log("Minimum Manhattan distance from port, part 1: ", minimum);
     console.timeEnd("finding closest intersection");
 });
