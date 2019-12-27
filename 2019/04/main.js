@@ -11,9 +11,6 @@ const checkSameOrAllAscendingDigits = (digits) => {
 
     let sameAdjacent = digits.reduce((valid, digit, i) => {
         if (i === 0) return valid = false;
-        if (digits === digits[i-1]) {
-            evenAdjacent[digit] += 1
-        }
         return valid || (digit === digits[i-1]);
     }, false);
 
@@ -22,7 +19,7 @@ const checkSameOrAllAscendingDigits = (digits) => {
 
 const checkEvenSameOrAllAscendingDigits = (digits) => {
     let evenAdjacent = {};
-    let current = null;
+    let repeats = false;
 
     const allAscending = digits.reduce((valid, digit, i) => {
         if (i === 0) return valid = true;
@@ -31,33 +28,25 @@ const checkEvenSameOrAllAscendingDigits = (digits) => {
 
     const sameAdjacent = digits.reduce((valid, digit, i) => {
         if (i === 0) return valid = false;
-        if (!evenAdjacent[digit]) evenAdjacent[digit] = 1;
-        // Fix counting!
         if (digit === digits[i-1]) {
-            evenAdjacent[digit] += 1;
-            current = digit;
+            // Includes in evenAdjacent map if there isn't one there before
+            // Keeps track of whether that is a repeating value
+            // Adds 1 to the number of repeats
+            if (!evenAdjacent[digit.toString()]) evenAdjacent[digit.toString()] = 0;
+            if (!repeats) repeats = true;
+            if (repeats) evenAdjacent[digit.toString()] += 1;
+        } else {
+            repeats = false;
         }
-        console.log(evenAdjacent[digit], current, digit);
-        // if (digit === digits[i-1]) {
-        //     current = digit;
-        //     console.log("current: %d, digit: %d", current, digit);
-        //     if (!evenAdjacent[digit]) {
-        //         evenAdjacent[digit] = 0;
-        //     }
-        //     else if (evenAdjacent[digit] && current === digit) {
-        //         evenAdjacent[digit] += 1;
-        //     }
-        // }
         return valid || (digit === digits[i-1]);
     }, false);
 
-    const invalidAdjacent = Object.keys(evenAdjacent)
-        .reduce((prev,numAdjacent) => {
-            return prev && (evenAdjacent[numAdjacent] % 2 === 0)
-        }, true);
+    // Checks if there's a value that only repeats once
+    const validAdjacent = Object.values(evenAdjacent).reduce((prev, repeats) => {
+        return prev || repeats === 1;
+    }, false);
 
-    console.log("invalidAdjacent: ", invalidAdjacent, digits, evenAdjacent);
-    return allAscending && sameAdjacent && !invalidAdjacent;
+    return allAscending && sameAdjacent && validAdjacent;
 }
 
 const isValidPassword = (num) => {
@@ -94,6 +83,6 @@ let uniqueValid = new Set(allValid);
 console.log("Number of different passwords in the range, part 1: ", allValid.length, uniqueValid.size);
 
 // Part 2: Unique different passwords in range with even numbered duplicated digits and ascending digits
-let allEvenValid = findValidEvenRepeatingPasswords(254999, 255066);
-let uniqueEvenValid = new Set(allValid);
+let allEvenValid = findValidEvenRepeatingPasswords(254032, 789860);
+let uniqueEvenValid = new Set(allEvenValid);
 console.log("Number of different passwords with even adjacency in the range, part 2: ", uniqueEvenValid.size);
