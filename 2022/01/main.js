@@ -49,8 +49,11 @@ const findTopKSum = (k = 3) => {
     curSum = curSum + contents[i];
   }
 
-  let total = maxThreeHeap.getHeap().reduce((prev, cur) => { return prev = prev + cur }, 0);
-  console.log("Final max: ", maxThreeHeap.getHeap(), total);
+  let first = maxThreeHeap.pop();
+  let second = maxThreeHeap.pop();
+  let third = maxThreeHeap.pop();
+  let total = [first, second, third].reduce((prev, cur) => { return prev = prev + cur }, 0);
+  console.log("Final max: ", [first, second, third], total);
 }
 
 /**
@@ -58,12 +61,12 @@ const findTopKSum = (k = 3) => {
  * Lessons:
  * 1. Must always keep track of size and capacity, and add until you fill capacity
  * 2. Must always update from the bottom, replacing with parent
+ * 3. Don't have capacity, just have unlimited heap, then pop top k
  */
 class MaxHeap {
   constructor(k = 3) {
     this.size = 0;
-    this.capacity = k;
-    this.heap = new Array(k).fill(0);  
+    this.heap = [0];
   }
   getSize () {
     return this.size;
@@ -72,21 +75,41 @@ class MaxHeap {
     return this.heap;
   }
   addToHeap(num) {
-    if (this.size < this.capacity) {
       this.heap[this.size] = num;
       this.size++;
-    } else {
-      if (this.heap[this.size-1] < num) {
-        this.heap[this.size-1] = num;
-        this.updateHeap()
-      }
-    }
+      this.updateHeap();
+  }
+  pop() {
+    let popped = this.heap.shift();
+    this.updateChildren();
+    return popped;
   }
   updateHeap() {
     for (let i = this.heap.length - 1; i >= 0; i--) {
-      let parent = Math.floor((i)/2);
+      let parent = Math.floor((i-1)/2);
       if (this.heap[parent] < this.heap[i]) {
         [this.heap[parent], this.heap[i]] = [this.heap[i], this.heap[parent]];
+      }
+    }
+  }
+  updateChildren() {
+    for (let i = 0; i < this.heap.length; i++) {
+      let left = 2*i + 1;
+      let right = 2*i + 2;
+      if (this.heap[left] && this.heap[right] && this.heap[left] > this.heap[right]) {
+        if (this.heap[left] > this.heap[i]) {
+          [this.heap[i], this.heap[left]] = [this.heap[left], this.heap[i]];
+        }
+      } else if (this.heap[left] && this.heap[right] && this.heap[left] < this.heap[right]) {
+        if (this.heap[right] > this.heap[i]) {
+          [this.heap[i], this.heap[right]] = [this.heap[right], this.heap[i]];
+        }
+      } else {
+        if (this.heap[left] && this.heap[left] > this.heap[i]) {
+          [this.heap[i], this.heap[left]] = [this.heap[left], this.heap[i]];
+        } else if (this.heap[right] && this.heap[right] > this.heap[i]) {
+          [this.heap[i], this.heap[right]] = [this.heap[right], this.heap[i]];
+        }
       }
     }
   }
@@ -94,4 +117,4 @@ class MaxHeap {
 
 
 // console.log(findTopSum());
-console.log(findTopKSum(3));
+console.log(findTopKSum(6));
