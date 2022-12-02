@@ -10,6 +10,9 @@ const readFile = (filepath) => {
   return input;
 }
 
+/**
+ * Part I
+ */
 // Paper beats rock (1-0), Scissors beats paper (2-1), Rock beats scissors (0-2)
 const Play = {
   Rock: 0,
@@ -64,4 +67,46 @@ const calculateOutcomeScore = (outcome) => {
   }
 }
 
-console.log(calculatePlayStrategy());
+/**
+ * Part II
+ */
+
+const choice = {
+  [Play.Rock]: 'X',
+  [Play.Paper]: 'Y',
+  [Play.Scissors]: 'Z',
+}
+
+const desired = {
+  X: 0,
+  Y: 3,
+  Z: 6
+}
+
+const calculateDesiredPlay = () => {
+  const plays = readFile(inputLoc);
+  let total = 0;
+  for (let i = 0; i < plays.length; i++) {
+    let outcome = desired[plays[i][1]];
+    let choice = pickPlay(plays[i][0], outcome);
+    total += outcome + shape[choice];
+    console.log("Choice: \t", choice);
+  }
+  console.log(total);
+  return total;
+}
+
+const pickPlay = (opponent, outcome) => {
+  console.log(opponent, outcome);
+  switch(outcome) {
+    case 3:
+      return choice[first[opponent]];
+    case 6:
+      return choice[first[opponent]+1] || choice[first[opponent]-2]; // If you want to win against scissors, you play rock
+    default:
+      return choice[first[opponent]-1] || choice[2]; // If you want to lose to rock, you play scissors
+  }
+}
+
+// console.log(calculatePlayStrategy());
+console.log(calculateDesiredPlay());
