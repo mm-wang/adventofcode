@@ -90,9 +90,7 @@ const calculateDesiredPlay = () => {
     let outcome = desired[plays[i][1]];
     let choice = pickPlay(plays[i][0], outcome);
     total += outcome + shape[choice];
-    console.log("Choice: \t", choice);
   }
-  console.log(total);
   return total;
 }
 
